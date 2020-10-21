@@ -175,6 +175,12 @@ ContextImpl::ContextImpl(Stats::Scope& scope, const Envoy::Ssl::ContextConfig& c
       if (has_crl) {
         X509_STORE_set_flags(store, X509_V_FLAG_CRL_CHECK | X509_V_FLAG_CRL_CHECK_ALL);
       }
+
+      // Redislabs Hook for verifying partial chain RED-48113
+      ENVOY_LOG_MISC(info, "Redislabs hook: Applying X509_V_FLAG_PARTIAL_CHAIN on the TLS context");
+      X509_STORE_set_flags(store, X509_V_FLAG_PARTIAL_CHAIN);
+
+
       verify_mode = SSL_VERIFY_PEER;
       verify_trusted_ca_ = true;
 
